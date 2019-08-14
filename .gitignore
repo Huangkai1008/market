@@ -17,3 +17,6 @@
 .vscode
 .idea
 market.iml
+
+# log
+logs

@@ -11,6 +11,7 @@ var (
 	once sync.Once
 
 	conf         *Conf
+	GinLogPath   string
 	RunMode      string
 	HttpPort     int
 	ReadTimeout  time.Duration
@@ -23,8 +24,13 @@ var (
 )
 
 type Conf struct {
+	App      `toml:"app"`
 	Server   `toml:"server"`
 	Database `toml:"database"`
+}
+
+type App struct {
+	GinLogPath string `toml:"ginLogPath"`
 }
 
 type Server struct {
@@ -47,6 +53,9 @@ func init() {
 		if _, err := toml.DecodeFile("conf/conf.toml", &conf); err != nil {
 			log.Fatalf("Failed to parse 'conf/conf.toml': %v ", err)
 		}
+
+		// App
+		GinLogPath = conf.GinLogPath
 
 		// Server
 		RunMode = conf.RunMode
