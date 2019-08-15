@@ -4,6 +4,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"market/pkg/constants"
 	"market/pkg/setting"
 	"os"
 )
@@ -48,7 +49,7 @@ func initLogger(logPath string, logLevel zapcore.Level, isDev bool) *zap.Logger 
 
 	runMode := setting.RunMode
 	var core zapcore.Core
-	if runMode == "release" {
+	if runMode == constants.ReleaseMode {
 		core = zapcore.NewCore(
 			zapcore.NewJSONEncoder(encoderConfig),
 			zapcore.NewMultiWriteSyncer(zapcore.AddSync(&hook)),

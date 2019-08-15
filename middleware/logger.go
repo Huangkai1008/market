@@ -1,18 +1,33 @@
 package middleware
 
 import (
+	"bytes"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"market/pkg/e"
 	"time"
 )
+
+type bodyLogWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w bodyLogWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
 
 func GinZap(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
-
+		bodyLogWriter := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
+		c.Writer = bodyLogWriter
 		c.Next()
-
 		latency := time.Since(start)
+
+		responseBody := bodyLogWriter.body.String()
+
 		clientIP := c.ClientIP()
 		method := c.Request.Method
 		statusCode := c.Writer.Status()
@@ -25,8 +40,7 @@ func GinZap(logger *zap.Logger) gin.HandlerFunc {
 					zap.String("latency", latency.String()),
 					zap.String("clientIP", clientIP),
 					zap.String("method", method),
-					zap.String("user-agent", c.Request.UserAgent()),
-					zap.String("error", c.Errors.String()),
+					zap.String("error", e.GetMsg(responseBody)),
 				)
 			}
 		case statusCode >= 500:
@@ -36,8 +50,7 @@ func GinZap(logger *zap.Logger) gin.HandlerFunc {
 					zap.String("latency", latency.String()),
 					zap.String("clientIP", clientIP),
 					zap.String("method", method),
-					zap.String("user-agent", c.Request.UserAgent()),
-					zap.String("error", c.Errors.String()),
+					zap.String("error", e.GetMsg(responseBody)),
 				)
 			}
 		default:
@@ -46,8 +59,6 @@ func GinZap(logger *zap.Logger) gin.HandlerFunc {
 				zap.String("latency", latency.String()),
 				zap.String("clientIP", clientIP),
 				zap.String("method", method),
-				zap.String("user-agent", c.Request.UserAgent()),
-				zap.String("error", c.Errors.String()),
 			)
 		}
 	}

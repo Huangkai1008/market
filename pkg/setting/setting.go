@@ -3,6 +3,7 @@ package setting
 import (
 	"github.com/BurntSushi/toml"
 	"log"
+	"market/pkg/constants"
 	"sync"
 	"time"
 )
@@ -50,7 +51,7 @@ type Database struct {
 
 func init() {
 	once.Do(func() {
-		if _, err := toml.DecodeFile("conf/conf.toml", &conf); err != nil {
+		if _, err := toml.DecodeFile(constants.FPath, &conf); err != nil {
 			log.Fatalf("Failed to parse 'conf/conf.toml': %v ", err)
 		}
 
@@ -58,7 +59,11 @@ func init() {
 		GinLogPath = conf.GinLogPath
 
 		// Server
-		RunMode = conf.RunMode
+		if conf.RunMode == "" {
+			RunMode = constants.DebugMode
+		} else {
+			RunMode = conf.RunMode
+		}
 		HttpPort = conf.HttpPort
 		ReadTimeout = conf.ReadTimeout * time.Second
 		WriteTimeout = conf.WriteTimeout * time.Second
