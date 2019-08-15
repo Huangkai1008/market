@@ -1,4 +1,4 @@
-package validator
+package validate
 
 import (
 	"github.com/gin-gonic/gin/binding"
