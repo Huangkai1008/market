@@ -19,5 +19,10 @@ func InitRouter() *gin.Engine {
 	{
 		pingApi.GET("", v1.Ping)
 	}
+
+	userApi := r.Group("/users")
+	{
+		userApi.POST("register", v1.Register)
+	}
 	return r
 }
