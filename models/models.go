@@ -13,8 +13,8 @@ var db *gorm.DB
 type Model struct {
 	// 默认model结构体
 	ID         uint      `gorm:"primary_key" json:"id"`
-	CreateTime time.Time `json:"create_time"`
-	UpdateTime time.Time `json:"update_time"`
+	CreateTime time.Time `gorm:"type:datetime" json:"create_time"`
+	UpdateTime time.Time `gorm:"type:datetime" json:"update_time"`
 }
 
 func init() {
@@ -41,4 +41,6 @@ func init() {
 	db.SingularTable(true) // 禁用复数表
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+
+	db.AutoMigrate(&User{})
 }

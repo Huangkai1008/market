@@ -64,7 +64,6 @@ func initLogger(logPath string, logLevel zapcore.Level, isDev bool) *zap.Logger 
 	}
 
 	if isDev {
-		// catch line num and stack info
 		caller := zap.AddCaller()
 		development := zap.Development()
 		logger = zap.New(core, caller, development)

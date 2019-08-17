@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
+	"market/models"
 	"market/pkg/validate"
 	"net/http"
 )
@@ -17,6 +18,24 @@ func Register(c *gin.Context) {
 	var register validate.Register
 	if err := c.ShouldBindJSON(&register); err != nil {
 		errs := err.(validator.ValidationErrors)
-		c.JSON(http.StatusBadRequest, register.Validate(errs))
+		c.AbortWithStatusJSON(http.StatusBadRequest, register.Validate(errs))
+	} else {
+		params := map[string]interface{}{
+			"username": register.Username,
+		}
+		if exist := models.ExistUser(params); exist {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "存在相同的用户名",
+			})
+		}
+		params = map[string]interface{}{
+			"email": register.Email,
+		}
+		if exist := models.ExistUser(params); exist {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "存在相同的邮箱账户",
+			})
+		}
+
 	}
 }
