@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -10,11 +11,39 @@ import (
 
 var db *gorm.DB
 
-type Model struct {
+type JsonTime struct {
+	time.Time
+}
+
+func (jsonTime JsonTime) MarshalJSON() ([]byte, error) {
+	formatted := fmt.Sprintf("\"%s\"", jsonTime.Format("2006-01-02 15:04:05"))
+	return []byte(formatted), nil
+}
+
+// Value insert timestamp into mysql need this function.
+func (jsonTime JsonTime) Value() (driver.Value, error) {
+	var zeroTime time.Time
+	if jsonTime.Time.UnixNano() == zeroTime.UnixNano() {
+		return nil, nil
+	}
+	return jsonTime.Time, nil
+}
+
+// Scan valueOf time.Time
+func (jsonTime *JsonTime) Scan(v interface{}) error {
+	value, ok := v.(time.Time)
+	if ok {
+		*jsonTime = JsonTime{Time: value}
+		return nil
+	}
+	return fmt.Errorf("can not convert %v to timestamp", v)
+}
+
+type BaseModel struct {
 	// 默认model结构体
-	ID         uint      `gorm:"primary_key" json:"id"`
-	CreateTime time.Time `gorm:"type:datetime" json:"create_time"`
-	UpdateTime time.Time `gorm:"type:datetime" json:"update_time"`
+	ID        uint     `gorm:"primary_key" json:"id"`
+	CreatedAt JsonTime `gorm:"type:datetime" json:"create_time"`
+	UpdatedAt JsonTime `gorm:"type:datetime" json:"update_time"`
 }
 
 func init() {
