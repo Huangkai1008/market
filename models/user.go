@@ -2,7 +2,7 @@ package models
 
 type User struct {
 	// 用户模型
-	Model
+	BaseModel
 	Username     string `gorm:"type:varchar(100);unique" json:"username"`
 	Email        string `gorm:"type:varchar(128);not null" json:"email"`
 	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`
@@ -31,4 +31,10 @@ func ExistUser(params map[string]interface{}) bool {
 	} else {
 		return false
 	}
+
+}
+
+func CreateUser(user User) (error, User) {
+	err := db.Create(&user).Error
+	return err, user
 }
