@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 			HashPassword: utils.MD5(register.Password),
 		}
 
-		if err, user := models.CreateUser(user); err != nil {
+		if user, err := models.CreateUser(user); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
 			})
@@ -55,4 +55,45 @@ func Register(c *gin.Context) {
 			c.JSON(http.StatusOK, user)
 		}
 	}
+}
+
+func GetToken(c *gin.Context) {
+	/**
+	已注册用户获取token
+	*/
+	var login validate.Login
+	if err := c.ShouldBindJSON(&login); err != nil {
+		errs := err.(validator.ValidationErrors)
+		c.AbortWithStatusJSON(http.StatusBadRequest, login.Validate(errs))
+	} else {
+		maps := map[string]interface{}{"username": login.Username}
+		if user, err := models.QueryUser(maps); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": err.Error(),
+			})
+			return
+		} else if user == (models.User{}) {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+				"message": "不存在的用户名",
+			})
+			return
+		} else if utils.MD5(login.Password) != user.HashPassword {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"message": "用户名和密码不匹配",
+			})
+			return
+		} else {
+			if token, err := utils.GenerateToken(user.ID, user.Username); err != nil {
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+					"message": "token生成错误",
+				})
+				return
+			} else {
+				c.JSON(http.StatusOK, gin.H{
+					"token": token,
+				})
+			}
+		}
+	}
+
 }

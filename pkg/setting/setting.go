@@ -13,6 +13,7 @@ var (
 
 	conf         *Conf
 	GinLogPath   string
+	SecretKey    string
 	RunMode      string
 	HttpPort     int
 	ReadTimeout  time.Duration
@@ -32,6 +33,7 @@ type Conf struct {
 
 type App struct {
 	GinLogPath string `toml:"ginLogPath"`
+	SecretKey  string `toml:"secretKey"`
 }
 
 type Server struct {
@@ -57,6 +59,7 @@ func init() {
 
 		// App
 		GinLogPath = conf.GinLogPath
+		SecretKey = conf.SecretKey
 
 		// Server
 		if conf.RunMode == "" {

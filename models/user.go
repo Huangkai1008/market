@@ -34,7 +34,24 @@ func ExistUser(params map[string]interface{}) bool {
 
 }
 
-func CreateUser(user User) (error, User) {
+func CreateUser(user User) (User, error) {
+	/**
+	创建用户
+	*/
 	err := db.Create(&user).Error
-	return err, user
+	return user, err
+}
+
+func QueryUser(params map[string]interface{}) (user User, err error) {
+	/**
+	查询用户
+	*/
+	maps := make(map[string]interface{})
+	if username, exist := params["username"]; exist {
+		maps["username"] = username
+	}
+
+	err = db.Where(maps).First(&user).Error
+	return user, err
+
 }

@@ -18,6 +18,10 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
+/**
+日志中间件
+*/
+
 func GinZap(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()

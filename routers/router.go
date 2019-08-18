@@ -23,6 +23,7 @@ func InitRouter() *gin.Engine {
 	userApi := r.Group("/users")
 	{
 		userApi.POST("register", v1.Register)
+		userApi.POST("tokens", v1.GetToken)
 	}
 	return r
 }

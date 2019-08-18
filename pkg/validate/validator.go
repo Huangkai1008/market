@@ -17,6 +17,11 @@ type Register struct {
 	Email    string `json:"email" validate:"required,email,max=256"`
 }
 
+type Login struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}
+
 func (r *Register) Validate(errs validator.ValidationErrors) e.MarketError {
 	var marketError e.MarketError
 	err := errs[0] // 获得第一个错误并返回, yield错误
@@ -48,4 +53,24 @@ func (r *Register) Validate(errs validator.ValidationErrors) e.MarketError {
 	}
 
 	return marketError
+}
+
+func (l *Login) Validate(errs validator.ValidationErrors) e.MarketError {
+	var marketError e.MarketError
+	err := errs[0] // 获得第一个错误并返回, yield错误
+	if err.Field() == "Username" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "用户名不能为空"
+		}
+
+	} else if err.Field() == "Password" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "密码不能为空"
+		}
+	}
+
+	return marketError
+
 }

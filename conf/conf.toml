@@ -1,5 +1,6 @@
 [app]
 ginLogPath = 'logs/gin.log'
+secretKey = '\x0f"V!\xe5\x94\x9a\x1c\\\x9fj\x1a\xf2\xcca\xe3\x99\xf9\x1as\xe0\xdb\x9c\xb3'
 
 [server]
 runMode = 'debug'
