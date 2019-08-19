@@ -4,7 +4,7 @@ type User struct {
 	// 用户模型
 	BaseModel
 	Username     string `gorm:"type:varchar(100);unique" json:"username"`
-	Email        string `gorm:"type:varchar(128);not null" json:"email"`
+	Email        string `gorm:"type:varchar(128);unique" json:"email"`
 	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`
 }
 
@@ -52,6 +52,6 @@ func QueryUser(params map[string]interface{}) (user User, err error) {
 	}
 
 	err = db.Where(maps).First(&user).Error
-	return user, err
+	return
 
 }

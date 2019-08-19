@@ -7,6 +7,7 @@ import (
 	"market/pkg/constants"
 	"market/pkg/setting"
 	"os"
+	"time"
 )
 
 // gin middleware log
@@ -38,7 +39,7 @@ func initLogger(logPath string, logLevel zapcore.Level, isDev bool) *zap.Logger 
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeTime:     JsonTimeEncoder,
 		EncodeDuration: zapcore.SecondsDurationEncoder,
 		EncodeCaller:   zapcore.FullCallerEncoder,
 		EncodeName:     zapcore.FullNameEncoder,
@@ -72,4 +73,9 @@ func initLogger(logPath string, logLevel zapcore.Level, isDev bool) *zap.Logger 
 	}
 
 	return logger
+}
+
+// 自定义时间格式化
+func JsonTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+	enc.AppendString(t.Format("2006/01/05 15:04:05:000"))
 }

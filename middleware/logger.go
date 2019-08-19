@@ -35,34 +35,38 @@ func GinZap(logger *zap.Logger) gin.HandlerFunc {
 		clientIP := c.ClientIP()
 		method := c.Request.Method
 		statusCode := c.Writer.Status()
+		requestUri := c.Request.RequestURI
 
 		switch {
 		case statusCode >= 400 && statusCode <= 499:
 			{
-				logger.Warn("[GIN]",
+				logger.Warn("[WARN]",
 					zap.Int("statusCode", statusCode),
 					zap.String("latency", latency.String()),
 					zap.String("clientIP", clientIP),
 					zap.String("method", method),
+					zap.String("requestUri", requestUri),
 					zap.String("error", e.GetMsg(responseBody)),
 				)
 			}
 		case statusCode >= 500:
 			{
-				logger.Error("[GIN]",
+				logger.Error("[ERROR]",
 					zap.Int("statusCode", statusCode),
 					zap.String("latency", latency.String()),
 					zap.String("clientIP", clientIP),
 					zap.String("method", method),
+					zap.String("requestUri", requestUri),
 					zap.String("error", e.GetMsg(responseBody)),
 				)
 			}
 		default:
-			logger.Info("[GIN]",
+			logger.Info("[INFO]",
 				zap.Int("statusCode", statusCode),
 				zap.String("latency", latency.String()),
 				zap.String("clientIP", clientIP),
 				zap.String("method", method),
+				zap.String("requestUri", requestUri),
 			)
 		}
 	}
