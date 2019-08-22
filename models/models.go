@@ -42,8 +42,8 @@ func (jsonTime *JsonTime) Scan(v interface{}) error {
 type BaseModel struct {
 	// 默认model结构体
 	ID        uint     `gorm:"primary_key" json:"id"`
-	CreatedAt JsonTime `gorm:"type:datetime" json:"create_time"`
-	UpdatedAt JsonTime `gorm:"type:datetime" json:"update_time"`
+	CreatedAt JsonTime `gorm:"type:datetime;column:create_time" json:"create_time"`
+	UpdatedAt JsonTime `gorm:"type:datetime;column:update_time" json:"update_time"`
 }
 
 func init() {
@@ -71,5 +71,5 @@ func init() {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &ProductCategory{})
 }
