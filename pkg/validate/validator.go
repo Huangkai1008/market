@@ -11,6 +11,10 @@ func init() {
 	binding.Validator = new(defaultValidator)
 }
 
+/************************************/
+/**********   用户模块验证    ********/
+/************************************/
+
 type Register struct {
 	Username string `json:"username" validate:"required,max=100"`
 	Password string `json:"password" validate:"required,max=100"`
@@ -73,4 +77,26 @@ func (l *Login) Validate(errs validator.ValidationErrors) e.MarketError {
 
 	return marketError
 
+}
+
+/************************************/
+/**********   商品模块验证    ********/
+/************************************/
+type CategoryQuery struct {
+	ParentId int `form:"parent_id" validate:"required,gte=0"`
+}
+
+func (c CategoryQuery) Validate(errs validator.ValidationErrors) e.MarketError {
+	var marketError e.MarketError
+	err := errs[0]
+
+	if err.Field() == "ParentId" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "分类父级id不能为空"
+		case "gte":
+			marketError.Message = "分类父级id不能小于0"
+		}
+	}
+	return marketError
 }

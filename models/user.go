@@ -46,12 +46,8 @@ func QueryUser(params map[string]interface{}) (user User, err error) {
 	/**
 	查询用户
 	*/
-	maps := make(map[string]interface{})
-	if username, exist := params["username"]; exist {
-		maps["username"] = username
-	}
 
-	err = db.Where(maps).First(&user).Error
+	err = db.Where(params).First(&user).Error
 	return
 
 }

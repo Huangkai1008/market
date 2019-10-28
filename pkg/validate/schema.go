@@ -6,5 +6,5 @@ import (
 )
 
 type Schema interface {
-	Validate(err validator.ValidationErrors) e.MarketError
+	Validate(errs validator.ValidationErrors) e.MarketError
 }
