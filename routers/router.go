@@ -25,5 +25,11 @@ func InitRouter() *gin.Engine {
 		userApi.POST("register", v1.Register)
 		userApi.POST("tokens", v1.GetToken)
 	}
+
+	categoryApi := r.Group("/categories")
+	{
+		categoryApi.GET("", v1.GetCategories)
+	}
+
 	return r
 }

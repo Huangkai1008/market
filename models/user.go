@@ -42,7 +42,7 @@ func CreateUser(user User) (User, error) {
 	return user, err
 }
 
-func QueryUser(params map[string]interface{}) (user User, err error) {
+func GetUser(params map[string]interface{}) (user User, err error) {
 	/**
 	查询用户
 	*/

@@ -83,7 +83,7 @@ func (l *Login) Validate(errs validator.ValidationErrors) e.MarketError {
 /**********   商品模块验证    ********/
 /************************************/
 type CategoryQuery struct {
-	ParentId int `form:"parent_id" validate:"required,gte=0"`
+	ParentId string `form:"parent_id" validate:"required,gte=0"`
 }
 
 func (c CategoryQuery) Validate(errs validator.ValidationErrors) e.MarketError {

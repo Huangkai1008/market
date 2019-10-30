@@ -67,7 +67,7 @@ func GetToken(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, login.Validate(errs))
 	} else {
 		maps := map[string]interface{}{"username": login.Username}
-		if user, err := models.QueryUser(maps); err != nil {
+		if user, err := models.GetUser(maps); err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
 			})
