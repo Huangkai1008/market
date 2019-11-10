@@ -24,10 +24,10 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	maps := make(map[string]interface{})
+	condition := make(map[string]interface{})
 
-	maps["username"] = register.Username
-	if exist, err := models.ExistUser(maps); exist || (err != nil) {
+	condition["username"] = register.Username
+	if exist, err := models.ExistUser(condition); exist || (err != nil) {
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
@@ -42,9 +42,9 @@ func Register(ctx *gin.Context) {
 		}
 	}
 
-	delete(maps, "username")
-	maps["email"] = register.Email
-	if exist, err := models.ExistUser(maps); exist || (err != nil) {
+	delete(condition, "username")
+	condition["email"] = register.Email
+	if exist, err := models.ExistUser(condition); exist || (err != nil) {
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
@@ -88,10 +88,10 @@ func GetToken(ctx *gin.Context) {
 		return
 	}
 
-	maps := make(map[string]interface{})
+	condition := make(map[string]interface{})
 
-	maps["username"] = login.Username
-	user, err := models.GetUser(maps)
+	condition["username"] = login.Username
+	user, err := models.GetUser(condition)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),

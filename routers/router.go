@@ -30,6 +30,8 @@ func InitRouter() *gin.Engine {
 	{
 		accountApi.GET("addresses", v1.GetAddresses)
 		accountApi.POST("addresses", v1.CreateAddress)
+		accountApi.PUT("addresses/:address_id", v1.UpdateAddress)
+		accountApi.DELETE("addresses/:address_id", v1.DeleteAddress)
 	}
 
 	categoryApi := r.Group("/categories")

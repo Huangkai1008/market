@@ -8,7 +8,7 @@ type User struct {
 	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`
 }
 
-func ExistUser(maps map[string]interface{}) (exist bool, err error) {
+func ExistUser(condition map[string]interface{}) (exist bool, err error) {
 	/**
 	是否存在用户
 	*/
@@ -17,7 +17,7 @@ func ExistUser(maps map[string]interface{}) (exist bool, err error) {
 		user  User
 	)
 
-	db.Where(maps).Find(&user).Count(&count)
+	db.Where(condition).Find(&user).Count(&count)
 
 	if count > 0 {
 		exist = true
@@ -36,12 +36,12 @@ func CreateUser(user User) (User, error) {
 	return user, err
 }
 
-func GetUser(maps map[string]interface{}) (user User, err error) {
+func GetUser(condition map[string]interface{}) (user User, err error) {
 	/**
 	查询用户
 	*/
 
-	err = db.Where(maps).First(&user).Error
+	err = db.Where(condition).First(&user).Error
 	return
 
 }

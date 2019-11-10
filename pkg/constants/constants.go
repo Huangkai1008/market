@@ -11,6 +11,6 @@ const (
 const FPath = "conf/conf.toml"
 
 const (
-	JwtExpireDuration = 3 * time.Hour
+	JwtExpireDuration = 6 * time.Hour
 	JwtIssuer         = "market"
 )

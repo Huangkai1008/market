@@ -11,14 +11,14 @@ type ProductCategory struct {
 	CatDesc     string `gorm:"type:text" json:"cat_desc"`                           // 分类描述
 }
 
-func GetCategories(maps interface{}) (categories []ProductCategory, err error) {
+func GetCategories(condition interface{}) (categories []ProductCategory, err error) {
 	//	获取商品分类
-	err = db.Where(maps).Find(&categories).Error
+	err = db.Where(condition).Find(&categories).Error
 	return
 }
 
-func GetCategoryCount(maps interface{}) (count int, err error) {
+func GetCategoryCount(condition interface{}) (count int, err error) {
 	// 获取商品分类总数
-	err = db.Model(ProductCategory{}).Where(maps).Count(&count).Error
+	err = db.Model(ProductCategory{}).Where(condition).Count(&count).Error
 	return
 }

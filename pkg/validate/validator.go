@@ -88,8 +88,19 @@ type AddressSchema struct {
 	Region      string `json:"region" validate:"required,max=32"`
 	FullAddress string `json:"full_address" validate:"required,max=64"`
 	Tag         string `json:"tag" validate:"max=32"`
-	IsDefault   bool   `json:"is_default" validate:"required"`
+	IsDefault   *bool  `json:"is_default" validate:"required"`
 }
+type (
+	//AddressCreate 收货地址创建schema
+	AddressCreate struct {
+		AddressSchema
+	}
+
+	//AddressUpdate 收货地址更新schema
+	AddressUpdate struct {
+		AddressSchema
+	}
+)
 
 func (a *AddressSchema) Validate(errs validator.ValidationErrors) e.MarketError {
 	var marketError e.MarketError
@@ -135,6 +146,23 @@ func (a *AddressSchema) Validate(errs validator.ValidationErrors) e.MarketError 
 		}
 	}
 
+	return marketError
+}
+
+type AddressUri struct {
+	AddressID uint `uri:"address_id" validate:"required"`
+}
+
+func (a AddressUri) Validate(errs validator.ValidationErrors) e.MarketError {
+	var marketError e.MarketError
+	err := errs[0]
+
+	if err.Field() == "AddressID" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "uri地址有误"
+		}
+	}
 	return marketError
 }
 

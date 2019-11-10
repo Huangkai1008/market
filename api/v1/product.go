@@ -26,16 +26,16 @@ func GetCategories(c *gin.Context) {
 		return
 	}
 
-	maps := make(map[string]interface{})
-	maps["parent_id"] = catQuery.ParentId
+	condition := make(map[string]interface{})
+	condition["parent_id"] = catQuery.ParentId
 
-	if categories, err = models.GetCategories(maps); err != nil {
+	if categories, err = models.GetCategories(condition); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	if total, err = models.GetCategoryCount(maps); err != nil {
+	if total, err = models.GetCategoryCount(condition); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
