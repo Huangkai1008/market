@@ -26,6 +26,12 @@ func InitRouter() *gin.Engine {
 		userApi.POST("tokens", v1.GetToken)
 	}
 
+	accountApi := r.Group("/account", middleware.Jwt())
+	{
+		accountApi.GET("addresses", v1.GetAddresses)
+		accountApi.POST("addresses", v1.CreateAddress)
+	}
+
 	categoryApi := r.Group("/categories")
 	{
 		categoryApi.GET("", v1.GetCategories)

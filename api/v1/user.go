@@ -20,7 +20,7 @@ func Register(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&register); err != nil {
 		errs := err.(validator.ValidationErrors)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, register.Validate(errs))
+		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, register.Validate(errs))
 		return
 	}
 
@@ -71,7 +71,7 @@ func Register(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, user)
+		ctx.JSON(http.StatusCreated, user)
 	}
 
 }
@@ -84,7 +84,7 @@ func GetToken(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&login); err != nil {
 		errs := err.(validator.ValidationErrors)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, login.Validate(errs))
+		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, login.Validate(errs))
 		return
 	}
 

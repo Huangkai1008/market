@@ -22,7 +22,7 @@ func GetCategories(c *gin.Context) {
 
 	if err := c.ShouldBindQuery(&catQuery); err != nil {
 		errs := err.(validator.ValidationErrors)
-		c.AbortWithStatusJSON(http.StatusBadRequest, catQuery.Validate(errs))
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, catQuery.Validate(errs))
 		return
 	}
 
