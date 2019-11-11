@@ -11,6 +11,15 @@ type ProductCategory struct {
 	CatDesc     string `gorm:"type:text" json:"cat_desc"`                           // 分类描述
 }
 
+type ProductCategorySpec struct {
+	// 商品分类规格 用于确定商品的规格模板
+	BaseModel
+	SpecName   string `gorm:"type:varchar(64);not null;unique_index:uq_cat_id_spec" json:"spec_name"` // 分类规格名称, 颜色 ...
+	JoinSelect *bool  `gorm:"type:tinyint(1);index;not null" json:"join_select"`                      // 是否可以筛选
+	SpecType   uint   `gorm:"type:tinyint(1);index;not null" json:"spec_type"`                        // 规格类型  1 销售规格属性 2 展示属性
+	CatId      uint   `gorm:"index;not null;unique_index:uq_cat_id_spec" json:"cat_id"`               // 商品分类id
+}
+
 func GetCategories(condition interface{}) (categories []ProductCategory, err error) {
 	//	获取商品分类
 	err = db.Where(condition).Find(&categories).Error

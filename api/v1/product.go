@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetCategories(c *gin.Context) {
+func GetCategories(ctx *gin.Context) {
 	/**
 	获取分类信息
 	parent_id 父级id
@@ -20,9 +20,9 @@ func GetCategories(c *gin.Context) {
 		err        error
 	)
 
-	if err := c.ShouldBindQuery(&catQuery); err != nil {
+	if err := ctx.ShouldBindQuery(&catQuery); err != nil {
 		errs := err.(validator.ValidationErrors)
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, catQuery.Validate(errs))
+		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, catQuery.Validate(errs))
 		return
 	}
 
@@ -30,19 +30,19 @@ func GetCategories(c *gin.Context) {
 	condition["parent_id"] = catQuery.ParentId
 
 	if categories, err = models.GetCategories(condition); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 	if total, err = models.GetCategoryCount(condition); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"categories": categories,
 		"total":      total,
 	})
