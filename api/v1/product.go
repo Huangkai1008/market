@@ -15,7 +15,7 @@ func GetCategories(ctx *gin.Context) {
 	*/
 	var catQuery validate.CategoryQuery
 	var (
-		categories []models.ProductCategory
+		categories models.ProductCategories
 		total      int
 		err        error
 	)
@@ -43,7 +43,7 @@ func GetCategories(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"categories": categories,
+		"categories": categories.ToSchemaCategories(),
 		"total":      total,
 	})
 }
@@ -72,7 +72,7 @@ func GetCategorySpecs(ctx *gin.Context) {
 		return
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
-			"specs": specs,
+			"specs": specs.ToSchemaCategorySpecs(),
 		})
 	}
 

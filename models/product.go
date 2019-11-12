@@ -1,5 +1,9 @@
 package models
 
+import (
+	"market/schema"
+)
+
 type ProductCategory struct {
 	// 商品分类
 	BaseModel
@@ -11,6 +15,29 @@ type ProductCategory struct {
 	CatDesc     string `gorm:"type:text" json:"cat_desc"`                           // 分类描述
 }
 
+type ProductCategories []*ProductCategory
+
+func (category *ProductCategory) ToSchemaCategory() (schemaCategory *schema.Category) {
+	schemaCategory = &schema.Category{
+		ID:          category.ID,
+		ParentId:    category.ParentId,
+		CatName:     category.CatName,
+		CatLevel:    category.CatLevel,
+		CatKeyWords: category.CatKeyWords,
+		CatIcon:     category.CatIcon,
+		CatDesc:     category.CatDesc,
+	}
+	return
+}
+
+func (categories ProductCategories) ToSchemaCategories() []*schema.Category {
+	schemaCategories := make([]*schema.Category, len(categories))
+	for index, category := range categories {
+		schemaCategories[index] = category.ToSchemaCategory()
+	}
+	return schemaCategories
+}
+
 type ProductCategorySpec struct {
 	// 商品分类规格 用于确定商品的规格模板
 	BaseModel
@@ -20,8 +47,29 @@ type ProductCategorySpec struct {
 	CatId      uint   `gorm:"index;not null;unique_index:uq_cat_id_spec" json:"cat_id"`               // 商品分类id
 }
 
+type ProductCategorySpecs []*ProductCategorySpec
+
+func (spec *ProductCategorySpec) ToSchemaCategorySpec() (schemaCategorySpec *schema.CategorySpec) {
+	schemaCategorySpec = &schema.CategorySpec{
+		ID:         spec.ID,
+		SpecName:   spec.SpecName,
+		JoinSelect: spec.JoinSelect,
+		SpecType:   spec.SpecType,
+		CatId:      spec.CatId,
+	}
+	return
+}
+
+func (specs ProductCategorySpecs) ToSchemaCategorySpecs() []*schema.CategorySpec {
+	schemaSpecs := make([]*schema.CategorySpec, len(specs))
+	for index, spec := range specs {
+		schemaSpecs[index] = spec.ToSchemaCategorySpec()
+	}
+	return schemaSpecs
+}
+
 //	获取商品分类
-func GetCategories(condition interface{}) (categories []ProductCategory, err error) {
+func GetCategories(condition interface{}) (categories ProductCategories, err error) {
 	err = db.Where(condition).Find(&categories).Error
 	return
 }
@@ -33,7 +81,7 @@ func GetCategoryCount(condition interface{}) (count int, err error) {
 }
 
 // 获取商品分类规格信息
-func GetCategorySpecs(condition interface{}) (specs []ProductCategorySpec, err error) {
+func GetCategorySpecs(condition interface{}) (specs ProductCategorySpecs, err error) {
 	err = db.Where(condition).Find(&specs).Error
 	return
 }
