@@ -2,10 +2,12 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/go-playground/validator.v9"
 	"market/models"
 	"market/pkg/utils"
 	"market/pkg/validate"
+	"market/schema"
 	"net/http"
 )
 
@@ -65,13 +67,13 @@ func Register(ctx *gin.Context) {
 		HashPassword: utils.MD5(register.Password),
 	}
 
-	if user, err := models.CreateUser(user); err != nil {
+	if user, err := models.CreateUser(&user); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusCreated, user)
+		ctx.JSON(http.StatusCreated, user.ToSchemaUser())
 	}
 
 }
@@ -92,13 +94,7 @@ func GetToken(ctx *gin.Context) {
 
 	condition["username"] = login.Username
 	user, err := models.GetUser(condition)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-		})
-		return
-	}
-	if user == (models.User{}) {
+	if gorm.IsRecordNotFoundError(err) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "不存在的用户名",
 		})
@@ -117,9 +113,6 @@ func GetToken(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"token": token,
-		})
+		ctx.JSON(http.StatusOK, &schema.TokenBack{Token: token})
 	}
-
 }

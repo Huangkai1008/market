@@ -1,11 +1,25 @@
 package models
 
+import "market/schema"
+
 type User struct {
 	// 用户模型
 	BaseModel
 	Username     string `gorm:"type:varchar(100);unique" json:"username"`
 	Email        string `gorm:"type:varchar(128);unique" json:"email"`
 	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`
+}
+
+func (user *User) ToSchemaUser() (schemaUser *schema.User) {
+	schemaUser = &schema.User{
+		BaseSchema: schema.BaseSchema{
+			ID:        user.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt},
+		Username: user.Username,
+		Email:    user.Email,
+	}
+	return
 }
 
 func ExistUser(condition map[string]interface{}) (exist bool, err error) {
@@ -28,11 +42,11 @@ func ExistUser(condition map[string]interface{}) (exist bool, err error) {
 
 }
 
-func CreateUser(user User) (User, error) {
+func CreateUser(user *User) (*User, error) {
 	/**
 	创建用户
 	*/
-	err := db.Create(&user).Error
+	err := db.Create(user).Error
 	return user, err
 }
 
