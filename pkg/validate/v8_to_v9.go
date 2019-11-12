@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+// 初始化gin验证器
+func init() {
+	binding.Validator = new(defaultValidator)
+}
+
 type defaultValidator struct {
 	once     sync.Once
 	validate *validator.Validate
