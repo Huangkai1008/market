@@ -187,3 +187,22 @@ func (c *CategoryQuery) Validate(errs validator.ValidationErrors) e.MarketError 
 	}
 	return marketError
 }
+
+type CategorySpecUri struct {
+	CatId uint `uri:"cat_id" validate:"required,gt=0"`
+}
+
+func (c CategorySpecUri) Validate(errs validator.ValidationErrors) e.MarketError {
+	var marketError e.MarketError
+	err := errs[0]
+
+	if err.Field() == "CatId" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "分类id不能为空"
+		case "gt":
+			marketError.Message = "分类id不能小于0"
+		}
+	}
+	return marketError
+}

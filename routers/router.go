@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 	categoryApi := r.Group("/categories")
 	{
 		categoryApi.GET("", v1.GetCategories)
+		categoryApi.GET("/:cat_id/specs", v1.GetCategorySpecs)
 	}
 
 	return r

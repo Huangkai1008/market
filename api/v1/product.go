@@ -47,3 +47,33 @@ func GetCategories(ctx *gin.Context) {
 		"total":      total,
 	})
 }
+
+func GetCategorySpecs(ctx *gin.Context) {
+	/**
+	获取分类规格信息
+	*/
+
+	var categorySpecUri validate.CategorySpecUri
+
+	if err := ctx.ShouldBindUri(&categorySpecUri); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	condition := make(map[string]interface{})
+	condition["cat_id"] = categorySpecUri.CatId
+
+	if specs, err := models.GetCategorySpecs(condition); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"specs": specs,
+		})
+	}
+
+}

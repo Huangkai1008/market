@@ -20,14 +20,20 @@ type ProductCategorySpec struct {
 	CatId      uint   `gorm:"index;not null;unique_index:uq_cat_id_spec" json:"cat_id"`               // 商品分类id
 }
 
+//	获取商品分类
 func GetCategories(condition interface{}) (categories []ProductCategory, err error) {
-	//	获取商品分类
 	err = db.Where(condition).Find(&categories).Error
 	return
 }
 
+// 获取商品分类总数
 func GetCategoryCount(condition interface{}) (count int, err error) {
-	// 获取商品分类总数
 	err = db.Model(ProductCategory{}).Where(condition).Count(&count).Error
+	return
+}
+
+// 获取商品分类规格信息
+func GetCategorySpecs(condition interface{}) (specs []ProductCategorySpec, err error) {
+	err = db.Where(condition).Find(&specs).Error
 	return
 }
