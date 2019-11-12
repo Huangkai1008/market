@@ -31,7 +31,7 @@ func GetAddresses(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, addresses)
+		ctx.JSON(http.StatusOK, addresses.ToSchemaAddresses())
 	}
 
 }
@@ -67,13 +67,13 @@ func CreateAddress(ctx *gin.Context) {
 		IsDefault:   addressCreate.IsDefault,
 	}
 
-	if address, err := models.CreateAddressTx(address); err != nil {
+	if address, err := models.CreateAddressTx(&address); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusCreated, address)
+		ctx.JSON(http.StatusCreated, address.ToSchemaAddress())
 	}
 }
 
@@ -115,7 +115,7 @@ func UpdateAddress(ctx *gin.Context) {
 	maps["region"] = addressUpdate.Region
 	maps["full_address"] = addressUpdate.Consignee
 	maps["tag"] = addressUpdate.Tag
-	maps["is_default"] = addressUpdate.IsDefault
+	maps["is_default"] = *addressUpdate.IsDefault
 
 	if address, err := models.UpdateAddressTx(addressID, userId, maps); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -123,7 +123,7 @@ func UpdateAddress(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, address)
+		ctx.JSON(http.StatusOK, (&address).ToSchemaAddress())
 	}
 
 }

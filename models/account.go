@@ -1,6 +1,9 @@
 package models
 
-import "errors"
+import (
+	"errors"
+	"market/schema"
+)
 
 //用户收货地址
 type Address struct {
@@ -14,14 +17,38 @@ type Address struct {
 	IsDefault   *bool  `gorm:"type:tinyint(1);index:is_default" json:"is_default"` // 是否默认地址
 }
 
+type Addresses []*Address
+
+func (address *Address) ToSchemaAddress() (schemaAddress *schema.Address) {
+	schemaAddress = &schema.Address{
+		ID:          address.ID,
+		UserID:      address.UserID,
+		Consignee:   address.Consignee,
+		Mobile:      address.Mobile,
+		Region:      address.Region,
+		FullAddress: address.FullAddress,
+		Tag:         address.Tag,
+		IsDefault:   address.IsDefault,
+	}
+	return
+}
+
+func (addresses Addresses) ToSchemaAddresses() []*schema.Address {
+	schemaAddresses := make([]*schema.Address, len(addresses))
+	for index, address := range addresses {
+		schemaAddresses[index] = address.ToSchemaAddress()
+	}
+	return schemaAddresses
+}
+
 // 获取用户收货地址
-func GetAddresses(condition interface{}) (addresses []Address, err error) {
+func GetAddresses(condition interface{}) (addresses Addresses, err error) {
 	err = db.Where(condition).Find(&addresses).Error
 	return addresses, err
 }
 
 // 创建用户收货地址事务
-func CreateAddressTx(address Address) (Address, error) {
+func CreateAddressTx(address *Address) (*Address, error) {
 
 	tx := db.Begin()
 
@@ -47,7 +74,7 @@ func CreateAddressTx(address Address) (Address, error) {
 
 	if err := tx.Create(&address).Error; err != nil {
 		tx.Rollback()
-		return Address{}, err
+		return &Address{}, err
 	}
 
 	return address, tx.Commit().Error
@@ -72,7 +99,7 @@ func UpdateAddressTx(addressID uint, userID uint, maps map[string]interface{}) (
 
 		var defaultAddress Address
 
-		if !(tx.Where(condition).First(&defaultAddress).RecordNotFound() || defaultAddress.ID == addressID) {
+		if !tx.Where(condition).First(&defaultAddress).RecordNotFound() && defaultAddress.ID != addressID {
 			tx.Model(&defaultAddress).Update(map[string]interface{}{"is_default": false})
 		}
 	}
