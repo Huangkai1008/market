@@ -68,6 +68,19 @@ func (specs ProductCategorySpecs) ToSchemaCategorySpecs() []*schema.CategorySpec
 	return schemaSpecs
 }
 
+//Product 商品 SPU
+type Product struct {
+	BaseModel
+	ProductName string `gorm:"type:varchar(64);index:product_name" json:"product_name"` // 商品名称
+	ProductSn   string `gorm:"type:varchar(24);unique" json:"product_sn"`               //商品货号
+	SubTitle    string `gorm:"type:varchar(128)" json:"sub_title"`                      // 副标题
+	CatId       uint   `gorm:"index;not null" json:"cat_id"`                            //商品分类id
+	BrandId     uint   `gorm:"index;not null" json:"brand_id"`                          // 品牌id
+	StoreId     uint   `gorm:"index;not null" json:"store_id"`                          // 商铺id
+	Unit        uint   `gorm:"type:varchar(32)" json:"unit"`                            // 单位(件/台...)
+	Published   *bool  `gorm:"type:tinyint(1);index;not null" json:"published"`         // 上架状态
+}
+
 //	获取商品分类
 func GetCategories(condition interface{}) (categories ProductCategories, err error) {
 	err = db.Where(condition).Find(&categories).Error

@@ -42,5 +42,5 @@ func init() {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 
-	db.AutoMigrate(&User{}, &Address{}, &ProductCategory{}, &ProductCategorySpec{})
+	db.AutoMigrate(&User{}, &Address{}, &ProductCategory{}, &ProductCategorySpec{}, &Product{})
 }
