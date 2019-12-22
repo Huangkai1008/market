@@ -1,11 +1,13 @@
 package setting
 
 import (
-	"github.com/BurntSushi/toml"
 	"log"
-	"market/pkg/constants"
 	"sync"
 	"time"
+
+	"github.com/BurntSushi/toml"
+
+	"market/pkg/constants"
 )
 
 var (

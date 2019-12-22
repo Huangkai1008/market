@@ -1,11 +1,13 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"market/pkg/utils"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"market/pkg/utils"
 )
 
 /**

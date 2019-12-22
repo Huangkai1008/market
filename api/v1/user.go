@@ -1,14 +1,16 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/go-playground/validator.v9"
+
 	"market/models"
 	"market/pkg/utils"
 	"market/pkg/validate"
 	"market/schema"
-	"net/http"
 )
 
 func Register(ctx *gin.Context) {

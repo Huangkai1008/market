@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"market/pkg/setting"
 	"market/routers"
-	"net/http"
 )
 
 func main() {

@@ -1,13 +1,15 @@
 package logging
 
 import (
+	"os"
+	"time"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+
 	"market/pkg/constants"
 	"market/pkg/setting"
-	"os"
-	"time"
 )
 
 // gin middleware log

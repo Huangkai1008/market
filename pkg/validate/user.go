@@ -2,7 +2,9 @@ package validate
 
 import (
 	"fmt"
+
 	"gopkg.in/go-playground/validator.v9"
+
 	"market/pkg/e"
 )
 

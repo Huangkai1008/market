@@ -2,7 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"market/api/v1"
+
+	v1 "market/api/v1"
 	"market/middleware"
 	"market/pkg/logging"
 	"market/pkg/setting"

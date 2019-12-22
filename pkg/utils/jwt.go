@@ -1,10 +1,12 @@
 package utils
 
 import (
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
+
 	"market/pkg/constants"
 	"market/pkg/setting"
-	"time"
 )
 
 type Claims struct {

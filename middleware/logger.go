@@ -2,10 +2,12 @@ package middleware
 
 import (
 	"bytes"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
 	"market/pkg/e"
-	"time"
 )
 
 type bodyLogWriter struct {

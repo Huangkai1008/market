@@ -1,12 +1,14 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
+
 	"market/models"
 	"market/pkg/utils"
 	"market/pkg/validate"
-	"net/http"
 )
 
 func GetAddresses(ctx *gin.Context) {

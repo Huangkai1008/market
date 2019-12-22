@@ -1,10 +1,11 @@
 package validate
 
 import (
-	"github.com/gin-gonic/gin/binding"
-	"gopkg.in/go-playground/validator.v9"
 	"reflect"
 	"sync"
+
+	"github.com/gin-gonic/gin/binding"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 // 初始化gin验证器

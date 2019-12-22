@@ -2,8 +2,10 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+
 	"market/pkg/setting"
 	"market/pkg/utils"
 )
