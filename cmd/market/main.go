@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"market/pkg/setting"
-	"market/routers"
+	"market/internal/app/routers"
+	"market/internal/app/setting"
 )
 
 func main() {

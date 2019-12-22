@@ -1,6 +1,6 @@
-package models
+package model
 
-import "market/schema"
+import "market/internal/app/schema"
 
 type User struct {
 	// 用户模型

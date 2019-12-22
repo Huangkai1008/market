@@ -3,10 +3,10 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 
-	v1 "market/api/v1"
-	"market/middleware"
+	v1 "market/internal/app/api/v1"
+	"market/internal/app/middleware"
+	"market/internal/app/setting"
 	"market/pkg/logging"
-	"market/pkg/setting"
 )
 
 func InitRouter() *gin.Engine {

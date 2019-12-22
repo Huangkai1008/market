@@ -8,7 +8,7 @@ const (
 	TestMode    = "test"
 )
 
-const FPath = "conf/conf.toml"
+const FPath = "configs/conf.toml"
 
 const (
 	JwtExpireDuration = 6 * time.Hour

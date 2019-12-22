@@ -1,9 +1,9 @@
-package models
+package model
 
 import (
 	"errors"
 
-	"market/schema"
+	"market/internal/app/schema"
 )
 
 //用户收货地址

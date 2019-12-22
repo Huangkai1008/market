@@ -1,7 +1,7 @@
-package models
+package model
 
 import (
-	"market/schema"
+	"market/internal/app/schema"
 )
 
 type ProductCategory struct {

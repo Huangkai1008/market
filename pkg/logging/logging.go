@@ -8,8 +8,8 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 
+	"market/internal/app/setting"
 	"market/pkg/constants"
-	"market/pkg/setting"
 )
 
 // gin middleware log

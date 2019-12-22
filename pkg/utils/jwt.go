@@ -5,8 +5,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
+	"market/internal/app/setting"
 	"market/pkg/constants"
-	"market/pkg/setting"
 )
 
 type Claims struct {

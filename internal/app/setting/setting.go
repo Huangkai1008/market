@@ -2,6 +2,8 @@ package setting
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -55,8 +57,9 @@ type Database struct {
 
 func init() {
 	once.Do(func() {
-		if _, err := toml.DecodeFile(constants.FPath, &conf); err != nil {
-			log.Fatalf("Failed to parse 'conf/conf.toml': %v ", err)
+		workDir, _ := os.Getwd()
+		if _, err := toml.DecodeFile(filepath.Join(workDir, constants.FPath), &conf); err != nil {
+			log.Fatalf("Failed to parse 'config/config.toml': %v ", err)
 		}
 
 		// App

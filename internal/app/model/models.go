@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"market/pkg/setting"
+	"market/internal/app/setting"
 	"market/pkg/utils"
 )
 

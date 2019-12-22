@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 
-	"market/models"
+	"market/internal/app/model"
+	"market/internal/app/validate"
 	"market/pkg/utils"
-	"market/pkg/validate"
 )
 
 func GetAddresses(ctx *gin.Context) {
@@ -27,7 +27,7 @@ func GetAddresses(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 	condition["user_id"] = userId
 
-	if addresses, err := models.GetAddresses(condition); err != nil {
+	if addresses, err := model.GetAddresses(condition); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -59,7 +59,7 @@ func CreateAddress(ctx *gin.Context) {
 		return
 	}
 
-	address := models.Address{
+	address := model.Address{
 		UserID:      userId,
 		Consignee:   addressCreate.Consignee,
 		Mobile:      addressCreate.Mobile,
@@ -69,7 +69,7 @@ func CreateAddress(ctx *gin.Context) {
 		IsDefault:   addressCreate.IsDefault,
 	}
 
-	if address, err := models.CreateAddressTx(&address); err != nil {
+	if address, err := model.CreateAddressTx(&address); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -119,7 +119,7 @@ func UpdateAddress(ctx *gin.Context) {
 	maps["tag"] = addressUpdate.Tag
 	maps["is_default"] = *addressUpdate.IsDefault
 
-	if address, err := models.UpdateAddressTx(addressID, userId, maps); err != nil {
+	if address, err := model.UpdateAddressTx(addressID, userId, maps); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -154,7 +154,7 @@ func DeleteAddress(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 	condition["user_id"] = userId
 	condition["id"] = addressID
-	if err := models.DeleteAddress(condition); err != nil {
+	if err := model.DeleteAddress(condition); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})

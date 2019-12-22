@@ -7,10 +7,10 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/go-playground/validator.v9"
 
-	"market/models"
+	"market/internal/app/model"
+	"market/internal/app/schema"
+	"market/internal/app/validate"
 	"market/pkg/utils"
-	"market/pkg/validate"
-	"market/schema"
 )
 
 func Register(ctx *gin.Context) {
@@ -31,7 +31,7 @@ func Register(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 
 	condition["username"] = register.Username
-	if exist, err := models.ExistUser(condition); exist || (err != nil) {
+	if exist, err := model.ExistUser(condition); exist || (err != nil) {
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
@@ -48,7 +48,7 @@ func Register(ctx *gin.Context) {
 
 	delete(condition, "username")
 	condition["email"] = register.Email
-	if exist, err := models.ExistUser(condition); exist || (err != nil) {
+	if exist, err := model.ExistUser(condition); exist || (err != nil) {
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"message": err.Error(),
@@ -63,13 +63,13 @@ func Register(ctx *gin.Context) {
 		}
 	}
 
-	user := models.User{
+	user := model.User{
 		Username:     register.Username,
 		Email:        register.Email,
 		HashPassword: utils.MD5(register.Password),
 	}
 
-	if user, err := models.CreateUser(&user); err != nil {
+	if user, err := model.CreateUser(&user); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -95,7 +95,7 @@ func GetToken(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 
 	condition["username"] = login.Username
-	user, err := models.GetUser(condition)
+	user, err := model.GetUser(condition)
 	if gorm.IsRecordNotFoundError(err) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "不存在的用户名",

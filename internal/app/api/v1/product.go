@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 
-	"market/models"
-	"market/pkg/validate"
+	"market/internal/app/model"
+	"market/internal/app/validate"
 )
 
 func GetCategories(ctx *gin.Context) {
@@ -17,7 +17,7 @@ func GetCategories(ctx *gin.Context) {
 	*/
 	var catQuery validate.CategoryQuery
 	var (
-		categories models.ProductCategories
+		categories model.ProductCategories
 		total      int
 		err        error
 	)
@@ -31,13 +31,13 @@ func GetCategories(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 	condition["parent_id"] = catQuery.ParentId
 
-	if categories, err = models.GetCategories(condition); err != nil {
+	if categories, err = model.GetCategories(condition); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	if total, err = models.GetCategoryCount(condition); err != nil {
+	if total, err = model.GetCategoryCount(condition); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -67,7 +67,7 @@ func GetCategorySpecs(ctx *gin.Context) {
 	condition := make(map[string]interface{})
 	condition["cat_id"] = categorySpecUri.CatId
 
-	if specs, err := models.GetCategorySpecs(condition); err != nil {
+	if specs, err := model.GetCategorySpecs(condition); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
