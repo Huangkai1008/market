@@ -1,0 +1,24 @@
+RunMode = 'debug'
+
+[log]
+Level = 0
+FileName = 'logs/gin.log'
+
+[jwt]
+JwtExpireDuration = 21600
+JwtIssuer = 'market'
+
+[http]
+HttpHost = '127.0.0.1'
+HttpPort = 7000
+ReadTimeout = 60
+WriteTimeout = 60
+
+[gorm]
+MaxIdleConnections = 10
+MaxOpenConnections = 100
+EnableAutoMigrate = true
+
+
+
+

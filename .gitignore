@@ -18,5 +18,8 @@
 .idea
 market.iml
 
+# environments
+.env
+
 # log
 logs

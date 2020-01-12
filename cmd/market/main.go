@@ -1,22 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"log"
 
-	"market/internal/app/routers"
-	"market/internal/app/setting"
+	"market/internal/pkg/application"
 )
 
 func main() {
-	router := routers.InitRouter()
-	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HttpPort),
-		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
-		MaxHeaderBytes: 1 << 20,
+	app, err := application.New()
+	if err != nil {
+		log.Printf("%+v\n", err)
+		panic(err)
 	}
 
-	_ = s.ListenAndServe()
+	if err := app.Start(); err != nil {
+		panic(err)
+	}
 }
