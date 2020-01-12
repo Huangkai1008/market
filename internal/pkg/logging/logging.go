@@ -24,14 +24,6 @@ func NewWithOptions(opts *Options) (*zap.Logger, error) {
 		logger *zap.Logger
 	)
 
-	hook := lumberjack.Logger{
-		Filename:   opts.FileName,
-		MaxSize:    128,
-		MaxBackups: 30,
-		MaxAge:     30,
-		Compress:   true,
-	}
-
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
@@ -50,29 +42,33 @@ func NewWithOptions(opts *Options) (*zap.Logger, error) {
 	atomicLevel := zap.NewAtomicLevel()
 	atomicLevel.SetLevel(zapcore.Level(opts.Level))
 
-	runMode := opts.RunMode
-	var core zapcore.Core
-	if runMode == constants.ReleaseMode {
-		core = zapcore.NewCore(
-			zapcore.NewJSONEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(&hook)),
-			atomicLevel,
-		)
-	} else {
-		core = zapcore.NewCore(
-			zapcore.NewJSONEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&hook)),
-			atomicLevel,
-		)
-	}
+	cores := make([]zapcore.Core, 0, 2)
 
+	je := zapcore.NewJSONEncoder(encoderConfig)
+	hook := lumberjack.Logger{
+		Filename:   opts.FileName,
+		MaxSize:    128,
+		MaxBackups: 30,
+		MaxAge:     30,
+		Compress:   true,
+	}
+	fileCore := zapcore.NewCore(je, zapcore.AddSync(&hook), atomicLevel)
+	cores = append(cores, fileCore)
+
+	var options []zap.Option
 	if opts.Config.RunMode == constants.DebugMode {
+		ce := zapcore.NewConsoleEncoder(encoderConfig)
+		consoleCore := zapcore.NewCore(ce, zapcore.AddSync(os.Stdout), atomicLevel)
+		cores = append(cores, consoleCore)
 		caller := zap.AddCaller()
 		development := zap.Development()
-		logger = zap.New(core, caller, development)
-	} else {
-		logger = zap.New(core)
+		options = append(options, caller, development)
 	}
+
+	core := zapcore.NewTee(cores...)
+	logger = zap.New(core, options...)
+
+	zap.ReplaceGlobals(logger)
 
 	return logger, err
 }
