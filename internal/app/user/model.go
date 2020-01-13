@@ -1,13 +1,13 @@
 package user
 
 import (
-	"market/internal/pkg/database"
+	"market/internal/pkg/database/model"
 	"market/internal/pkg/schema"
 )
 
 // UserSchema 用户模型
 type User struct {
-	database.BaseModel
+	model.BaseModel
 	Username     string `gorm:"type:varchar(100);unique" json:"username"`
 	Email        string `gorm:"type:varchar(128);unique" json:"email"`
 	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`

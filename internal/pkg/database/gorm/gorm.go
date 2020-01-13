@@ -1,9 +1,12 @@
-package database
+package gorm
 
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 
+	"market/internal/app/account"
+	"market/internal/app/product"
+	"market/internal/app/user"
 	"market/internal/pkg/config"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -45,5 +48,6 @@ func configure(db *gorm.DB, opts *Options) error {
 
 // autoMigrate 自动映射数据表
 func autoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate().Error
+	return db.AutoMigrate(
+		&user.User{}, &account.Address{}, &product.Category{}, &product.CategorySpec{}, &product.Product{}).Error
 }

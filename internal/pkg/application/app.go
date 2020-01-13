@@ -16,7 +16,7 @@ import (
 	"market/internal/app/user"
 	"market/internal/pkg/auth/jwtauth"
 	"market/internal/pkg/config"
-	"market/internal/pkg/database"
+	gorm2 "market/internal/pkg/database/gorm"
 	"market/internal/pkg/logging"
 	"market/internal/pkg/middleware"
 )
@@ -42,7 +42,7 @@ func New() (*Application, error) {
 		return nil, errors.Wrap(err, "日志配置错误")
 	}
 
-	db, err := database.New(&database.Options{
+	db, err := gorm2.New(&gorm2.Options{
 		Database: &conf.Database,
 		Gorm:     &conf.Gorm,
 	})

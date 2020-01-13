@@ -1,4 +1,4 @@
-package database
+package model
 
 import "market/internal/pkg/utils"
 

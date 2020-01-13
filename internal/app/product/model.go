@@ -1,12 +1,12 @@
 package product
 
 import (
-	"market/internal/pkg/database"
+	"market/internal/pkg/database/model"
 )
 
 // CategorySchema 商品分类模型
 type Category struct {
-	database.BaseModel
+	model.BaseModel
 	ParentId    uint   `gorm:"index:parent_id;not null;default:0" json:"parent_id"` // 父分类, 0表示一级分类
 	CatName     string `gorm:"type:varchar(64);unique" json:"cat_name"`             // 分类名
 	CatLevel    uint8  `gorm:"type:tinyint(1);index:cat_level" json:"cat_level"`    // 分类等级, 0->1级; 1->2级
@@ -16,6 +16,10 @@ type Category struct {
 }
 
 type Categories []*Category
+
+func (Category) TableName() string {
+	return "product_category"
+}
 
 func (category *Category) ToSchemaCategory() (schemaCategory *CategorySchema) {
 	schemaCategory = &CategorySchema{
@@ -40,7 +44,7 @@ func (categories Categories) ToSchemaCategories() []*CategorySchema {
 
 // CategorySpec  商品分类规格 用于确定商品的规格模板
 type CategorySpec struct {
-	database.BaseModel
+	model.BaseModel
 	SpecName   string `gorm:"type:varchar(64);not null;unique_index:uq_cat_id_spec" json:"spec_name"` // 分类规格名称, 颜色 ...
 	JoinSelect *bool  `gorm:"type:tinyint(1);index;not null" json:"join_select"`                      // 是否可以筛选
 	SpecType   uint   `gorm:"type:tinyint(1);index;not null" json:"spec_type"`                        // 规格类型  1 销售规格属性 2 展示属性
@@ -48,6 +52,10 @@ type CategorySpec struct {
 }
 
 type CategorySpecs []*CategorySpec
+
+func (CategorySpec) TableName() string {
+	return "product_category_spec"
+}
 
 func (spec *CategorySpec) ToSchemaCategorySpec() (schemaCategorySpec *CategorySpecSchema) {
 	schemaCategorySpec = &CategorySpecSchema{
@@ -70,7 +78,7 @@ func (specs CategorySpecs) ToSchemaCategorySpecs() []*CategorySpecSchema {
 
 // Product 商品SPU模型
 type Product struct {
-	database.BaseModel
+	model.BaseModel
 	ProductName string `gorm:"type:varchar(64);index:product_name" json:"product_name"` // 商品名称
 	ProductSn   string `gorm:"type:varchar(24);unique" json:"product_sn"`               //商品货号
 	SubTitle    string `gorm:"type:varchar(128)" json:"sub_title"`                      // 副标题
