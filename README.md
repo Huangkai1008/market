@@ -18,9 +18,14 @@ go -get https://github.com/Huangkai1008/market
 ```
 
 ## Usage
-
+1. Add the libs
 ```bash
-go mod download                 # Add the libs
+go mod download       
+```
+
+2. Run the application
+```bash
+go run cmd/market/main.go
 ```
 
 ## License

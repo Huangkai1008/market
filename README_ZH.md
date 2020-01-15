@@ -17,9 +17,14 @@ go -get https://github.com/Huangkai1008/market
 ```
 
 ## 使用
-
+1. 添加依赖
 ```bash
 go mod download                 # Add the libs
+```
+
+2. 启动应用
+```bash
+go run cmd/market/main.go
 ```
 
 ## 许可证
