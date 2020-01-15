@@ -102,7 +102,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&addressUpdate); err != nil {
 		errs := err.(validator.ValidationErrors)
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, addressUpdate.Validate(errs))
+		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, addressUpdate.Validate(errs))
 		return
 	}
 

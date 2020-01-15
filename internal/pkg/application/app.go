@@ -10,10 +10,10 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"market/internal/app/account"
-	"market/internal/app/index"
-	"market/internal/app/product"
-	"market/internal/app/user"
+	"market/internal/app/v1/account"
+	"market/internal/app/v1/index"
+	"market/internal/app/v1/product"
+	"market/internal/app/v1/user"
 	"market/internal/pkg/auth/jwtauth"
 	"market/internal/pkg/config"
 	gorm2 "market/internal/pkg/database/gorm"
@@ -99,11 +99,15 @@ func (a *Application) configureApps() error {
 	accountRouter := account.NewRouter(accountHandler)
 	productRouter := product.NewRouter(productHandler)
 
-	// Register Router
-	indexRouter(a.Server)
-	userRouter(a.Server)
-	accountRouter(a.Server)
-	productRouter(a.Server)
+	// API Router Group
+	apiGroup := a.Server.Group("/api")
+	v1Group := apiGroup.Group("/v1")
+	{
+		indexRouter(v1Group)
+		userRouter(v1Group)
+		accountRouter(v1Group)
+		productRouter(v1Group)
+	}
 	return nil
 }
 

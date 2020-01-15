@@ -9,8 +9,8 @@ import (
 
 func NewRouter(
 	h *Handler,
-) router.Router {
-	return func(r *gin.Engine) {
+) router.Group {
+	return func(r *gin.RouterGroup) {
 		categoryApi := r.Group("/categories", middleware.AuthMiddleware(h.auth))
 		{
 			categoryApi.GET("", h.GetCategories)

@@ -2,14 +2,12 @@ package index
 
 import (
 	"github.com/gin-gonic/gin"
-
-	"market/internal/pkg/router"
 )
 
 func NewRouter(
 	h *Handler,
-) router.Router {
-	return func(r *gin.Engine) {
+) func(r *gin.RouterGroup) {
+	return func(r *gin.RouterGroup) {
 		indexApi := r.Group("/")
 		{
 			indexApi.GET("ping", Ping)

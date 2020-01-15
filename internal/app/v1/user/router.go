@@ -8,8 +8,8 @@ import (
 
 func NewRouter(
 	h *Handler,
-) router.Router {
-	return func(r *gin.Engine) {
+) router.Group {
+	return func(r *gin.RouterGroup) {
 		userApi := r.Group("/users")
 		{
 			userApi.POST("register", h.Register)

@@ -4,9 +4,9 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 
-	"market/internal/app/account"
-	"market/internal/app/product"
-	"market/internal/app/user"
+	"market/internal/app/v1/account"
+	"market/internal/app/v1/product"
+	"market/internal/app/v1/user"
 	"market/internal/pkg/config"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"

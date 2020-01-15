@@ -29,7 +29,7 @@ func (h *Handler) GetCategories(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindQuery(&catQuerySchema); err != nil {
 		errs := err.(validator.ValidationErrors)
-		ctx.AbortWithStatusJSON(http.StatusUnprocessableEntity, catQuerySchema.Validate(errs))
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, catQuerySchema.Validate(errs))
 		return
 	}
 
@@ -80,5 +80,4 @@ func (h *Handler) GetCategorySpecs(ctx *gin.Context) {
 			"specs": specs.ToSchemaCategorySpecs(),
 		})
 	}
-
 }
