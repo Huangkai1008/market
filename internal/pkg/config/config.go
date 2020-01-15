@@ -63,6 +63,10 @@ type HTTP struct {
 	WriteTimeout time.Duration
 }
 
+func (h HTTP) Addr() string {
+	return fmt.Sprintf("%s:%d", h.HttpHost, h.HttpPort)
+}
+
 // Gorm Gorm配置参数
 type Gorm struct {
 	MaxIdleConnections int

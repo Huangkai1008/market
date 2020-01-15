@@ -1,8 +1,12 @@
 package application
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,11 +27,12 @@ import (
 
 // Application 应用
 type Application struct {
-	Logger *zap.Logger
-	Config *config.Config
-	DB     *gorm.DB
-	Auth   *jwtauth.JwtAuth
-	Server *gin.Engine
+	logger     *zap.Logger
+	config     *config.Config
+	db         *gorm.DB
+	auth       *jwtauth.JwtAuth
+	router     *gin.Engine
+	httpServer *http.Server
 }
 
 // New 返回一个新的应用实例
@@ -60,16 +65,16 @@ func New() (*Application, error) {
 	// Recover
 	r.Use(gin.Recovery())
 
-	// Logger
+	// logger
 	r.Use(middleware.LoggerMiddleware(logger))
 
 	// Application
 	application := &Application{
-		Logger: logger,
-		Config: conf,
-		DB:     db,
-		Auth:   auth,
-		Server: r,
+		logger: logger,
+		config: conf,
+		db:     db,
+		auth:   auth,
+		router: r,
 	}
 
 	if application.configureApps() != nil {
@@ -82,25 +87,25 @@ func New() (*Application, error) {
 
 func (a *Application) configureApps() error {
 	// Repository
-	indexRepository := index.NewRepository(a.DB)
-	userRepository := user.NewRepository(a.DB)
-	accountRepository := account.NewRepository(a.DB)
-	productRepository := product.NewRepository(a.DB)
+	indexRepository := index.NewRepository(a.db)
+	userRepository := user.NewRepository(a.db)
+	accountRepository := account.NewRepository(a.db)
+	productRepository := product.NewRepository(a.db)
 
 	// Handler
-	indexHandler := index.NewHandler(indexRepository, a.Auth)
-	userHandler := user.NewHandler(userRepository, a.Auth)
-	accountHandler := account.NewHandler(accountRepository, a.Auth)
-	productHandler := product.NewHandler(productRepository, a.Auth)
+	indexHandler := index.NewHandler(indexRepository, a.auth)
+	userHandler := user.NewHandler(userRepository, a.auth)
+	accountHandler := account.NewHandler(accountRepository, a.auth)
+	productHandler := product.NewHandler(productRepository, a.auth)
 
-	// Initial Router
+	// Initial router
 	indexRouter := index.NewRouter(indexHandler)
 	userRouter := user.NewRouter(userHandler)
 	accountRouter := account.NewRouter(accountHandler)
 	productRouter := product.NewRouter(productHandler)
 
-	// API Router Group
-	apiGroup := a.Server.Group("/api")
+	// API router Group
+	apiGroup := a.router.Group("/api")
 	v1Group := apiGroup.Group("/v1")
 	{
 		indexRouter(v1Group)
@@ -113,14 +118,50 @@ func (a *Application) configureApps() error {
 
 // Start 启动应用
 func (a *Application) Start() error {
-	server := &http.Server{
-		Addr:           fmt.Sprintf(":%d", a.Config.HttpPort),
-		Handler:        a.Server,
-		ReadTimeout:    a.Config.ReadTimeout * time.Second,
-		WriteTimeout:   a.Config.WriteTimeout * time.Second,
+	a.httpServer = &http.Server{
+		Addr:           fmt.Sprintf("%s:%d", a.config.HttpHost, a.config.HttpPort),
+		Handler:        a.router,
+		ReadTimeout:    a.config.ReadTimeout * time.Second,
+		WriteTimeout:   a.config.WriteTimeout * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	err := server.ListenAndServe()
-	return err
+	a.logger.Info("Http server starting ...", zap.String("addr", a.config.Addr()))
+
+	go func() {
+		if err := a.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			a.logger.Fatal("Start http server err", zap.Error(err))
+		}
+		return
+	}()
+	return nil
+}
+
+// Stop 停止应用
+func (a *Application) Stop() error {
+	a.logger.Info("Stopping http server ...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) // 平滑关闭, 等待5秒钟处理
+	defer cancel()
+	if err := a.httpServer.Shutdown(ctx); err != nil {
+		return errors.Wrap(err, "Shutdown http server error")
+	}
+	a.logger.Info("Server exiting ...")
+	return nil
+}
+
+// AwaitSignal 等待信号量
+func (a *Application) AwaitSignal() {
+	c := make(chan os.Signal, 1)
+	signal.Reset(syscall.SIGTERM, syscall.SIGINT)
+	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
+	select {
+	case s := <-c:
+		a.logger.Info("Receive a signal", zap.String("signal", s.String()))
+		if a.httpServer != nil {
+			if err := a.Stop(); err != nil {
+				a.logger.Warn("Stop http server error", zap.Error(err))
+			}
+		}
+		os.Exit(0)
+	}
 }
