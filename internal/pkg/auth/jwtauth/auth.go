@@ -35,7 +35,7 @@ func New(opts *Options) *JwtAuth {
 // GenerateToken 生成令牌
 func (a *JwtAuth) GenerateToken(userID uint, username string) (string, error) {
 	nowTime := time.Now()
-	expireTime := nowTime.Add(a.opts.JwtExpireDuration)
+	expireTime := nowTime.Add(a.opts.JwtExpireDuration * time.Second)
 
 	claims := Claims{
 		UserId:   userID,
