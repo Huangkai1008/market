@@ -82,9 +82,9 @@ type Product struct {
 	ProductName string `gorm:"type:varchar(64);index;comment:'商品名称'" json:"product_name"`      // 商品名称
 	ProductSn   string `gorm:"type:varchar(24);unique;comment:'商品货号'" json:"product_sn"`       // 商品货号
 	SubTitle    string `gorm:"type:varchar(128);comment:'副标题'" json:"sub_title"`               // 副标题
-	CatId       uint   `gorm:"index;not null;comment:'商品分类id'" json:"cat_id"`                  // 商品分类id
-	BrandId     uint   `gorm:"index;not null;comment:'品牌id'" json:"brand_id"`                  // 品牌id
-	StoreId     uint   `gorm:"index;not null;comment:'商铺id'" json:"store_id"`                  // 商铺id
+	CatId       uint   `gorm:"type:bigint(10);index;not null;comment:'商品分类id'" json:"cat_id"`  // 商品分类id
+	BrandId     uint   `gorm:"type:bigint(10);index;not null;comment:'品牌id'" json:"brand_id"`  // 品牌id
+	StoreId     uint   `gorm:"type:bigint(10);index;not null;comment:'商铺id'" json:"store_id"`  // 商铺id
 	Unit        uint   `gorm:"type:varchar(32);comment:'单位(件/台...)'" json:"unit"`              // 单位(件/台...)
 	Published   *bool  `gorm:"type:tinyint(1);index;not null;comment:'上架状态'" json:"published"` // 上架状态
 }
