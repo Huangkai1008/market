@@ -5,12 +5,12 @@ import (
 	"market/internal/pkg/schema"
 )
 
-// UserSchema 用户模型
+// User 用户模型
 type User struct {
 	model.BaseModel
-	Username     string `gorm:"type:varchar(100);unique" json:"username"`
-	Email        string `gorm:"type:varchar(128);unique" json:"email"`
-	HashPassword string `gorm:"type:varchar(256);not null" json:"-"`
+	Username     string `gorm:"type:varchar(100);unique;comment:'用户名'" json:"username"` // 用户名
+	Email        string `gorm:"type:varchar(128);unique;comment:'邮箱'" json:"email"`     // 邮箱
+	HashPassword string `gorm:"type:varchar(256);not null;comment:'密码'" json:"-"`       // 密码
 }
 
 func (user *User) ToSchemaUser() (schemaUser *ReadSchema) {
