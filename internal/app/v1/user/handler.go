@@ -82,7 +82,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 
 }
 
-// LoginSchema 已注册用户登录获取token
+// Login 已注册用户登录获取token
 func (h *Handler) Login(ctx *gin.Context) {
 	var loginSchema LoginSchema
 

@@ -2,7 +2,6 @@ package account
 
 import (
 	"fmt"
-
 	"gopkg.in/go-playground/validator.v9"
 
 	"market/internal/pkg/ecode"
@@ -11,7 +10,10 @@ import (
 type AddressBaseSchema struct {
 	Consignee   string `json:"consignee" validate:"required,max=64"`
 	Mobile      string `json:"mobile" validate:"required,max=32"`
+	Province    string `json:"province" validate:"required,max=32"`
+	City        string `json:"city" validate:"required,max=32"`
 	Region      string `json:"region" validate:"required,max=32"`
+	Street      string `json:"street" validate:"required,max=32"`
 	FullAddress string `json:"full_address" validate:"required,max=64"`
 	Tag         string `json:"tag" validate:"max=32"`
 	IsDefault   *bool  `json:"is_default" validate:"required"`
@@ -27,6 +29,35 @@ type (
 		AddressBaseSchema
 	}
 )
+
+func (a *AddressBaseSchema) ToAddress() (address *Address) {
+	address = &Address{
+		Consignee:   a.Consignee,
+		Mobile:      a.Mobile,
+		Province:    a.Province,
+		City:        a.City,
+		Region:      a.Region,
+		Street:      a.Street,
+		FullAddress: a.FullAddress,
+		Tag:         a.Tag,
+		IsDefault:   a.IsDefault,
+	}
+	return
+}
+
+func (a *AddressBaseSchema) ToMap() map[string]interface{} {
+	maps := make(map[string]interface{})
+	maps["consignee"] = a.Consignee
+	maps["mobile"] = a.Mobile
+	maps["province"] = a.Province
+	maps["city"] = a.City
+	maps["region"] = a.Region
+	maps["street"] = a.Street
+	maps["full_address"] = a.Consignee
+	maps["tag"] = a.Tag
+	maps["is_default"] = *a.IsDefault
+	return maps
+}
 
 func (a *AddressBaseSchema) Validate(errs validator.ValidationErrors) ecode.MarketError {
 	var marketError ecode.MarketError
@@ -45,12 +76,33 @@ func (a *AddressBaseSchema) Validate(errs validator.ValidationErrors) ecode.Mark
 		case "max":
 			marketError.Message = fmt.Sprintf("收件人手机号码长度不能超过%s个字符", err.Param())
 		}
+	} else if err.Field() == "Province" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "省份/直辖市不能为空"
+		case "max":
+			marketError.Message = fmt.Sprintf("省份/直辖市字段长度不能超过%s个字符", err.Param())
+		}
+	} else if err.Field() == "City" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "所选城市不能为空"
+		case "max":
+			marketError.Message = fmt.Sprintf("所选城市字段长度不能超过%s个字符", err.Param())
+		}
 	} else if err.Field() == "Region" {
 		switch err.Tag() {
 		case "required":
 			marketError.Message = "所在地区不能为空"
 		case "max":
 			marketError.Message = fmt.Sprintf("所在地区字段长度不能超过%s个字符", err.Param())
+		}
+	} else if err.Field() == "Street" {
+		switch err.Tag() {
+		case "required":
+			marketError.Message = "所在街道不能为空"
+		case "max":
+			marketError.Message = fmt.Sprintf("所在街道字段长度不能超过%s个字符", err.Param())
 		}
 	} else if err.Field() == "FullAddress" {
 		switch err.Tag() {
@@ -71,7 +123,6 @@ func (a *AddressBaseSchema) Validate(errs validator.ValidationErrors) ecode.Mark
 			marketError.Message = "是否设置默认地址不能为空"
 		}
 	}
-
 	return marketError
 }
 

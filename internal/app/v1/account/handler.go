@@ -18,7 +18,7 @@ func NewHandler(repo Repository, auth auth.Auth) *Handler {
 	return &Handler{repository: repo, auth: auth}
 }
 
-// GetOne 获取收货地址
+// Get 获取收货地址
 func (h *Handler) Get(ctx *gin.Context) {
 	userId, err := h.auth.ParseUserID(ctx)
 	if err != nil {
@@ -59,17 +59,10 @@ func (h *Handler) Create(ctx *gin.Context) {
 		return
 	}
 
-	address := Address{
-		UserID:      userId,
-		Consignee:   addressCreate.Consignee,
-		Mobile:      addressCreate.Mobile,
-		Region:      addressCreate.Region,
-		FullAddress: addressCreate.FullAddress,
-		Tag:         addressCreate.Tag,
-		IsDefault:   addressCreate.IsDefault,
-	}
+	address := addressCreate.ToAddress()
+	address.UserID = userId
 
-	if address, err := h.repository.Create(&address); err != nil {
+	if address, err := h.repository.Create(address); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -108,13 +101,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 
 	addressID := addressURI.AddressID
 
-	maps := make(map[string]interface{})
-	maps["consignee"] = addressUpdate.Consignee
-	maps["mobile"] = addressUpdate.Mobile
-	maps["region"] = addressUpdate.Region
-	maps["full_address"] = addressUpdate.Consignee
-	maps["tag"] = addressUpdate.Tag
-	maps["is_default"] = *addressUpdate.IsDefault
+	maps := addressUpdate.ToMap()
 
 	if address, err := h.repository.Update(addressID, userId, maps); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

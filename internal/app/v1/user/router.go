@@ -13,7 +13,7 @@ func NewRouter(
 		userApi := r.Group("/users")
 		{
 			userApi.POST("register", h.Register)
-			userApi.POST("tokens", h.Login)
+			userApi.POST("login", h.Login)
 		}
 	}
 }
