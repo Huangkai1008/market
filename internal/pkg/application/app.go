@@ -14,13 +14,12 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"market/internal/app/v1/account"
 	"market/internal/app/v1/index"
 	"market/internal/app/v1/product"
 	"market/internal/app/v1/user"
 	"market/internal/pkg/auth/jwtauth"
 	"market/internal/pkg/config"
-	gorm2 "market/internal/pkg/database/gorm"
+	gormApi "market/internal/pkg/database/gorm"
 	"market/internal/pkg/logging"
 	"market/internal/pkg/middleware"
 )
@@ -47,7 +46,7 @@ func New() (*Application, error) {
 		return nil, errors.Wrap(err, "日志配置错误")
 	}
 
-	db, err := gorm2.New(&gorm2.Options{
+	db, err := gormApi.New(&gormApi.Options{
 		Database: &conf.Database,
 		Gorm:     &conf.Gorm,
 	})
@@ -70,7 +69,7 @@ func New() (*Application, error) {
 
 	// Application
 	application := &Application{
-		logger: logger,
+		logger: logger.With(zap.String("type", "Application")),
 		config: conf,
 		db:     db,
 		auth:   auth,
@@ -89,19 +88,16 @@ func (a *Application) configureApps() error {
 	// Repository
 	indexRepository := index.NewRepository(a.db)
 	userRepository := user.NewRepository(a.db)
-	accountRepository := account.NewRepository(a.db)
 	productRepository := product.NewRepository(a.db)
 
 	// Handler
 	indexHandler := index.NewHandler(indexRepository, a.auth)
 	userHandler := user.NewHandler(userRepository, a.auth)
-	accountHandler := account.NewHandler(accountRepository, a.auth)
 	productHandler := product.NewHandler(productRepository, a.auth)
 
 	// Initial router
 	indexRouter := index.NewRouter(indexHandler)
 	userRouter := user.NewRouter(userHandler)
-	accountRouter := account.NewRouter(accountHandler)
 	productRouter := product.NewRouter(productHandler)
 
 	// API router Group
@@ -110,7 +106,6 @@ func (a *Application) configureApps() error {
 	{
 		indexRouter(v1Group)
 		userRouter(v1Group)
-		accountRouter(v1Group)
 		productRouter(v1Group)
 	}
 	return nil
@@ -149,7 +144,7 @@ func (a *Application) Stop() error {
 	return nil
 }
 
-// AwaitSignal 等待信号量
+// AwaitSignal 等待信号
 func (a *Application) AwaitSignal() {
 	c := make(chan os.Signal, 1)
 	signal.Reset(syscall.SIGTERM, syscall.SIGINT)
