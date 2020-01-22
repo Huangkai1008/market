@@ -3,7 +3,7 @@ package product
 import "github.com/jinzhu/gorm"
 
 type Repository interface {
-	GetCategory(condition interface{}) (Categories, error)
+	GetCategories(condition interface{}) (Categories, error)
 	GetCategoryCount(condition interface{}) (int, error)
 	GetCategorySpec(condition interface{}) (CategorySpecs, error)
 }
@@ -17,7 +17,7 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 // GetCategory 获取商品分类
-func (r *repository) GetCategory(condition interface{}) (categories Categories, err error) {
+func (r *repository) GetCategories(condition interface{}) (categories Categories, err error) {
 	err = r.db.Where(condition).Find(&categories).Error
 	return
 }

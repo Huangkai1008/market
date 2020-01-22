@@ -10,6 +10,12 @@ type CategoryQuerySchema struct {
 	ParentId string `form:"parent_id" validate:"required,gte=0"`
 }
 
+func (c *CategoryQuerySchema) ToMap() map[string]interface{} {
+	maps := make(map[string]interface{})
+	maps["parent_id"] = c.ParentId
+	return maps
+}
+
 func (c *CategoryQuerySchema) Validate(errs validator.ValidationErrors) ecode.MarketError {
 	var marketError ecode.MarketError
 	err := errs[0]

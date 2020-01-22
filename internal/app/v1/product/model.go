@@ -7,12 +7,12 @@ import (
 // CategorySchema 商品分类模型
 type Category struct {
 	model.BaseModel
-	ParentId    uint   `gorm:"index;not null;default:0;comment:'父分类, 0表示一级分类'" json:"parent_id"`  // 父分类, 0表示一级分类
-	CatName     string `gorm:"type:varchar(64);unique;comment:'分类名'" json:"cat_name"`             // 分类名
-	CatLevel    uint8  `gorm:"type:tinyint(1);index;comment:'分类等级,0->1级,1->2级'" json:"cat_level"` // 分类等级, 0->1级,1->2级
-	CatKeyWords string `gorm:"type:varchar(255);comment:'分类关键词'" json:"cat_key_words"`            // 分类关键词
-	CatIcon     string `gorm:"type:varchar(255);comment:'分类图标'" json:"cat_icon"`                  // 分类图标
-	CatDesc     string `gorm:"type:text;comment:'分类描述'" json:"cat_desc"`                          // 分类描述
+	ParentId    uint   `gorm:"index;not null;default:0;comment:'父分类, 0表示一级分类'" json:"parent_id"`           // 父分类, 0表示一级分类
+	CatName     string `gorm:"type:varchar(64);not null;unique;comment:'分类名'" json:"cat_name"`             // 分类名
+	CatLevel    uint8  `gorm:"type:tinyint(1);not null;index;comment:'分类等级,0->1级,1->2级'" json:"cat_level"` // 分类等级, 0->1级,1->2级
+	CatKeyWords string `gorm:"type:varchar(255);comment:'分类关键词'" json:"cat_key_words"`                     // 分类关键词
+	CatIcon     string `gorm:"type:varchar(255);comment:'分类图标'" json:"cat_icon"`                           // 分类图标
+	CatDesc     string `gorm:"type:text;comment:'分类描述'" json:"cat_desc"`                                   // 分类描述
 }
 
 type Categories []*Category

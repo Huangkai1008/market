@@ -20,11 +20,11 @@ func NewHandler(repo Repository, auth auth.Auth) *Handler {
 
 // GetCategories 获取分类信息
 func (h *Handler) GetCategories(ctx *gin.Context) {
-	var catQuerySchema CategoryQuerySchema
 	var (
-		categories Categories
-		total      int
-		err        error
+		catQuerySchema CategoryQuerySchema
+		categories     Categories
+		total          int
+		err            error
 	)
 
 	if err := ctx.ShouldBindQuery(&catQuerySchema); err != nil {
@@ -33,16 +33,14 @@ func (h *Handler) GetCategories(ctx *gin.Context) {
 		return
 	}
 
-	condition := make(map[string]interface{})
-	condition["parent_id"] = catQuerySchema.ParentId
-
-	if categories, err = h.repository.GetCategory(condition); err != nil {
+	maps := catQuerySchema.ToMap()
+	if categories, err = h.repository.GetCategories(maps); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	if total, err = h.repository.GetCategoryCount(condition); err != nil {
+	if total, err = h.repository.GetCategoryCount(maps); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
