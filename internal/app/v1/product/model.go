@@ -2,17 +2,20 @@ package product
 
 import (
 	"market/internal/pkg/database/model"
+	"market/internal/pkg/utils"
 )
 
 // CategorySchema 商品分类模型
 type Category struct {
-	model.BaseModel
-	ParentId    uint   `gorm:"index;not null;default:0;comment:'父分类, 0表示一级分类'" json:"parent_id"`           // 父分类, 0表示一级分类
-	CatName     string `gorm:"type:varchar(64);not null;unique;comment:'分类名'" json:"cat_name"`             // 分类名
-	CatLevel    uint8  `gorm:"type:tinyint(1);not null;index;comment:'分类等级,0->1级,1->2级'" json:"cat_level"` // 分类等级, 0->1级,1->2级
-	CatKeyWords string `gorm:"type:varchar(255);comment:'分类关键词'" json:"cat_key_words"`                     // 分类关键词
-	CatIcon     string `gorm:"type:varchar(255);comment:'分类图标'" json:"cat_icon"`                           // 分类图标
-	CatDesc     string `gorm:"type:text;comment:'分类描述'" json:"cat_desc"`                                   // 分类描述
+	ID          uint           `gorm:"primary_key" json:"id"`
+	ParentId    uint           `gorm:"index;not null;default:0;comment:'父分类, 0表示一级分类'" json:"parent_id"`           // 父分类, 0表示一级分类
+	CatName     string         `gorm:"type:varchar(64);not null;unique;comment:'分类名'" json:"cat_name"`             // 分类名
+	CatLevel    uint8          `gorm:"type:tinyint(1);not null;index;comment:'分类等级,0->1级,1->2级'" json:"cat_level"` // 分类等级, 0->1级,1->2级
+	CatKeywords string         `gorm:"type:varchar(255);comment:'分类关键词'" json:"cat_keywords"`                      // 分类关键词
+	CatIcon     string         `gorm:"type:varchar(255);comment:'分类图标'" json:"cat_icon"`                           // 分类图标
+	CatDesc     string         `gorm:"type:text;comment:'分类描述'" json:"cat_desc"`                                   // 分类描述
+	CreatedAt   utils.JsonTime `gorm:"type:datetime;column:create_time;comment:'创建时间'" json:"create_time"`
+	UpdatedAt   utils.JsonTime `gorm:"type:datetime;column:update_time;comment:'更新时间'" json:"update_time"`
 }
 
 type Categories []*Category
@@ -27,7 +30,7 @@ func (category *Category) ToSchemaCategory() (schemaCategory *CategorySchema) {
 		ParentId:    category.ParentId,
 		CatName:     category.CatName,
 		CatLevel:    category.CatLevel,
-		CatKeyWords: category.CatKeyWords,
+		CatKeywords: category.CatKeywords,
 		CatIcon:     category.CatIcon,
 		CatDesc:     category.CatDesc,
 	}

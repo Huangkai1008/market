@@ -52,12 +52,12 @@ func (c CategorySpecURISchema) Validate(errs validator.ValidationErrors) ecode.M
 
 type CategorySchema struct {
 	ID          uint   `json:"id"`
-	ParentId    uint   `json:"parent_id"`     // 父分类, 0表示一级分类
-	CatName     string `json:"cat_name"`      // 分类名
-	CatLevel    uint8  `json:"cat_level"`     // 分类等级, 0->1级; 1->2级
-	CatKeyWords string `json:"cat_key_words"` // 分类关键词
-	CatIcon     string `json:"cat_icon"`      // 分类图标
-	CatDesc     string `json:"cat_desc"`      // 分类描述
+	ParentId    uint   `json:"parent_id"`    // 父分类, 0表示一级分类
+	CatName     string `json:"cat_name"`     // 分类名
+	CatLevel    uint8  `json:"cat_level"`    // 分类等级, 0->1级; 1->2级
+	CatKeywords string `json:"cat_keywords"` // 分类关键词
+	CatIcon     string `json:"cat_icon"`     // 分类图标
+	CatDesc     string `json:"cat_desc"`     // 分类描述
 }
 
 type CategoryListSchema struct {
