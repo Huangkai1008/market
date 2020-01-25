@@ -8,13 +8,13 @@ import (
 // User 用户模型
 type User struct {
 	model.BaseModel
-	Username     string `gorm:"type:varchar(100);unique;comment:'用户名'" json:"username"` // 用户名
-	Email        string `gorm:"type:varchar(128);unique;comment:'邮箱'" json:"email"`     // 邮箱
-	HashPassword string `gorm:"type:varchar(256);not null;comment:'密码'" json:"-"`       // 密码
+	Username     string `gorm:"type:varchar(100);not null;unique;comment:'用户名'" json:"username"` // 用户名
+	Email        string `gorm:"type:varchar(128);not null;unique;comment:'邮箱'" json:"email"`     // 邮箱
+	HashPassword string `gorm:"type:varchar(256);not null;comment:'密码'" json:"-"`                // 密码
 }
 
-func (user *User) ToSchemaUser() (schemaUser *ReadSchema) {
-	schemaUser = &ReadSchema{
+func (user *User) ToUserSchema() (readSchema *ReadSchema) {
+	readSchema = &ReadSchema{
 		BaseSchema: schema.BaseSchema{
 			ID:        user.ID,
 			CreatedAt: user.CreatedAt,
@@ -37,13 +37,13 @@ type Address struct {
 	Street      string `gorm:"type:varchar(32);not null;comment:'所在街道'" json:"street"`                   // 所在街道
 	FullAddress string `gorm:"type:varchar(64);not null;comment:'详细地址'" json:"full_address"`             // 详细地址
 	Tag         string `gorm:"type:varchar(32);comment:'标签'" json:"tag"`                                 // 标签
-	IsDefault   *bool  `gorm:"type:tinyint(1);index;comment:'是否默认地址'" json:"is_default"`                 // 是否默认地址
+	IsDefault   *bool  `gorm:"type:tinyint(1);not null;index;comment:'是否默认地址'" json:"is_default"`        // 是否默认地址
 }
 
 type Addresses []*Address
 
-func (address *Address) ToSchemaAddress() (schemaAddress *AddressSchema) {
-	schemaAddress = &AddressSchema{
+func (address *Address) ToAddressSchema() (addressSchema *AddressSchema) {
+	addressSchema = &AddressSchema{
 		ID:     address.ID,
 		UserID: address.UserID,
 		AddressBaseSchema: AddressBaseSchema{
@@ -61,10 +61,10 @@ func (address *Address) ToSchemaAddress() (schemaAddress *AddressSchema) {
 	return
 }
 
-func (addresses Addresses) ToSchemaAddresses() []*AddressSchema {
-	schemaAddresses := make([]*AddressSchema, len(addresses))
+func (addresses Addresses) ToAddressSchemas() []*AddressSchema {
+	addressSchemas := make([]*AddressSchema, len(addresses))
 	for index, address := range addresses {
-		schemaAddresses[index] = address.ToSchemaAddress()
+		addressSchemas[index] = address.ToAddressSchema()
 	}
-	return schemaAddresses
+	return addressSchemas
 }

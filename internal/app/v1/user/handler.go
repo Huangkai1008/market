@@ -77,7 +77,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusCreated, user.ToSchemaUser())
+		ctx.JSON(http.StatusCreated, user.ToUserSchema())
 	}
 
 }
@@ -138,7 +138,7 @@ func (h *Handler) GetAddress(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, addresses.ToSchemaAddresses())
+		ctx.JSON(http.StatusOK, addresses.ToAddressSchemas())
 	}
 }
 
@@ -169,7 +169,7 @@ func (h *Handler) CreateAddress(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusCreated, address.ToSchemaAddress())
+		ctx.JSON(http.StatusCreated, address.ToAddressSchema())
 	}
 }
 
@@ -210,7 +210,7 @@ func (h *Handler) UpdateAddress(ctx *gin.Context) {
 		})
 		return
 	} else {
-		ctx.JSON(http.StatusOK, (&address).ToSchemaAddress())
+		ctx.JSON(http.StatusOK, (&address).ToAddressSchema())
 	}
 
 }

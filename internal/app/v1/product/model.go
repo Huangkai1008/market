@@ -24,8 +24,8 @@ func (Category) TableName() string {
 	return "product_category"
 }
 
-func (category *Category) ToSchemaCategory() (schemaCategory *CategorySchema) {
-	schemaCategory = &CategorySchema{
+func (category *Category) ToCategorySchema() (categorySchema *CategorySchema) {
+	categorySchema = &CategorySchema{
 		ID:          category.ID,
 		ParentId:    category.ParentId,
 		CatName:     category.CatName,
@@ -37,12 +37,12 @@ func (category *Category) ToSchemaCategory() (schemaCategory *CategorySchema) {
 	return
 }
 
-func (categories Categories) ToSchemaCategories() []*CategorySchema {
-	schemaCategories := make([]*CategorySchema, len(categories))
+func (categories Categories) ToCategorySchema() []*CategorySchema {
+	categorySchemas := make([]*CategorySchema, len(categories))
 	for index, category := range categories {
-		schemaCategories[index] = category.ToSchemaCategory()
+		categorySchemas[index] = category.ToCategorySchema()
 	}
-	return schemaCategories
+	return categorySchemas
 }
 
 // CategorySpec  商品分类规格 用于确定商品的规格模板
@@ -60,8 +60,8 @@ func (CategorySpec) TableName() string {
 	return "product_category_spec"
 }
 
-func (spec *CategorySpec) ToSchemaCategorySpec() (schemaCategorySpec *CategorySpecSchema) {
-	schemaCategorySpec = &CategorySpecSchema{
+func (spec *CategorySpec) ToCategorySpecSchema() (categorySpecSchema *CategorySpecSchema) {
+	categorySpecSchema = &CategorySpecSchema{
 		ID:         spec.ID,
 		SpecName:   spec.SpecName,
 		JoinSelect: spec.JoinSelect,
@@ -71,12 +71,12 @@ func (spec *CategorySpec) ToSchemaCategorySpec() (schemaCategorySpec *CategorySp
 	return
 }
 
-func (specs CategorySpecs) ToSchemaCategorySpecs() []*CategorySpecSchema {
-	schemaSpecs := make([]*CategorySpecSchema, len(specs))
+func (specs CategorySpecs) ToCategorySpecSchemas() []*CategorySpecSchema {
+	specSchemas := make([]*CategorySpecSchema, len(specs))
 	for index, spec := range specs {
-		schemaSpecs[index] = spec.ToSchemaCategorySpec()
+		specSchemas[index] = spec.ToCategorySpecSchema()
 	}
-	return schemaSpecs
+	return specSchemas
 }
 
 // Product 商品SPU模型

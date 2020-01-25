@@ -48,7 +48,7 @@ func (h *Handler) GetCategories(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"categories": categories.ToSchemaCategories(),
+		"categories": categories.ToCategorySchema(),
 		"total":      total,
 	})
 }
@@ -75,7 +75,7 @@ func (h *Handler) GetCategorySpecs(ctx *gin.Context) {
 		return
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
-			"specs": specs.ToSchemaCategorySpecs(),
+			"specs": specs.ToCategorySpecSchemas(),
 		})
 	}
 }
