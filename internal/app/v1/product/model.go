@@ -13,7 +13,7 @@ type Category struct {
 	CatLevel    uint8          `gorm:"type:tinyint(1);not null;index;comment:'分类等级,0->1级,1->2级'" json:"cat_level"` // 分类等级, 0->1级,1->2级
 	CatKeywords string         `gorm:"type:varchar(255);comment:'分类关键词'" json:"cat_keywords"`                      // 分类关键词
 	CatIcon     string         `gorm:"type:varchar(255);comment:'分类图标'" json:"cat_icon"`                           // 分类图标
-	CatDesc     string         `gorm:"type:text;comment:'分类描述'" json:"cat_desc"`                                   // 分类描述
+	CatDesc     string         `gorm:"type:varchar(255);comment:'分类描述'" json:"cat_desc"`                           // 分类描述
 	CreatedAt   utils.JsonTime `gorm:"type:datetime;column:create_time;comment:'创建时间'" json:"create_time"`
 	UpdatedAt   utils.JsonTime `gorm:"type:datetime;column:update_time;comment:'更新时间'" json:"update_time"`
 }
@@ -51,7 +51,8 @@ type CategorySpec struct {
 	SpecName   string `gorm:"type:varchar(64);not null;unique_index:uq_cat_id_spec;comment:'分类规格名称'" json:"spec_name"` // 分类规格名称, 颜色 ...
 	JoinSelect *bool  `gorm:"type:tinyint(1);index;not null;comment:'是否可以筛选'" json:"join_select"`                      // 是否可以筛选
 	SpecType   uint   `gorm:"type:tinyint(1);index;not null;comment:'规格类型  1 销售规格属性 2 展示属性'" json:"spec_type"`         // 规格类型  1 销售规格属性 2 展示属性
-	CatId      uint   `gorm:"index;not null;unique_index:uq_cat_id_spec;comment:'商品分类id'" json:"cat_id"`               // 商品分类id
+	Unit       string `gorm:"type:varchar(20);comment:'属性单位'" json:"unit"`                                             // 属性单位，可选
+	CatId      uint   `gorm:"index;not null;unique;comment:'商品分类id'" json:"cat_id"`                                    // 商品分类id
 }
 
 type CategorySpecs []*CategorySpec
@@ -79,15 +80,31 @@ func (specs CategorySpecs) ToCategorySpecSchemas() []*CategorySpecSchema {
 	return specSchemas
 }
 
-// Product 商品SPU模型
-type Product struct {
+// Spu 商品SPU模型
+type Spu struct {
 	model.BaseModel
-	ProductName string `gorm:"type:varchar(64);index;comment:'商品名称'" json:"product_name"`      // 商品名称
-	ProductSn   string `gorm:"type:varchar(24);unique;comment:'商品货号'" json:"product_sn"`       // 商品货号
-	SubTitle    string `gorm:"type:varchar(128);comment:'副标题'" json:"sub_title"`               // 副标题
-	CatId       uint   `gorm:"type:bigint(10);index;not null;comment:'商品分类id'" json:"cat_id"`  // 商品分类id
-	BrandId     uint   `gorm:"type:bigint(10);index;not null;comment:'品牌id'" json:"brand_id"`  // 品牌id
-	StoreId     uint   `gorm:"type:bigint(10);index;not null;comment:'商铺id'" json:"store_id"`  // 商铺id
-	Unit        uint   `gorm:"type:varchar(32);comment:'单位(件/台...)'" json:"unit"`              // 单位(件/台...)
-	Published   *bool  `gorm:"type:tinyint(1);index;not null;comment:'上架状态'" json:"published"` // 上架状态
+	SpuName   string `gorm:"type:varchar(64);not null;index;comment:'商品名称'" json:"spu_name"` // 商品名称
+	SpuSn     string `gorm:"type:varchar(24)not null;unique;comment:'商品货号'" json:"spu_sn"`   // 商品货号
+	SubTitle  string `gorm:"type:varchar(128);comment:'副标题'" json:"sub_title"`               // 副标题
+	CatId     uint   `gorm:"type:bigint(10);not null;index;comment:'商品分类id'" json:"cat_id"`  // 商品分类id
+	BrandId   uint   `gorm:"type:bigint(10);not null;index;comment:'品牌id'" json:"brand_id"`  // 品牌id
+	StoreId   uint   `gorm:"type:bigint(10);not null;index;comment:'商铺id'" json:"store_id"`  // 商铺id
+	Unit      uint   `gorm:"type:varchar(32);comment:'单位(件/台...)'" json:"unit"`              // 单位(件/台...)
+	Published *bool  `gorm:"type:tinyint(1);not null;index;comment:'上架状态'" json:"published"` // 上架状态
+}
+
+type SpuList []*Spu
+
+func (Spu) TableName() string {
+	return "product_spu"
+}
+
+// Spu 商品详情表
+type SpuDetail struct {
+	model.BaseModel
+	SpuDesc string `gorm:"type:text;not null;comment:'商品描述'"`
+}
+
+func (SpuDetail) TableName() string {
+	return "product_spu_detail"
 }

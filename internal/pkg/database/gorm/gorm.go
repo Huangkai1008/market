@@ -48,5 +48,5 @@ func configure(db *gorm.DB, opts *Options) error {
 // autoMigrate 自动映射数据表
 func autoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		&user.User{}, &user.Address{}, &product.Category{}, &product.CategorySpec{}, &product.Product{}).Error
+		&user.User{}, &user.Address{}, &product.Category{}, &product.CategorySpec{}, &product.Spu{}, &product.SpuDetail{}).Error
 }

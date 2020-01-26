@@ -87,6 +87,6 @@ type Database struct {
 
 // DSN 数据库连接串
 func (d Database) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
-		d.User, d.Password, d.Host, d.Port, d.DBName, d.Parameters)
+	const dsn = "%s:%s@tcp(%s:%d)/%s?%s"
+	return fmt.Sprintf(dsn, d.User, d.Password, d.Host, d.Port, d.DBName, d.Parameters)
 }
